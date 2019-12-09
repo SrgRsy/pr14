@@ -1,12 +1,14 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 const app = express();
 const { PORT = 3000 } = process.env;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
+const { login, createUser } = require('./routes/users');
+const auth = require('./middlewares/auth');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //подключаемся к серверу монго
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -16,17 +18,16 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "5de32f55073cef20847d44d6"
-  };
 
-  next();
-});
+app.post('/signin', login);
+app.post('/signup', createUser);
 
-app.use('/users', require('./routes/users'));
+
+app.use(auth);
+
+
 app.use('/cards', require('./routes/cards'));
-app.use( (req, res) => {
+app.use((req, res) => {
   res.status(404).send({ "message": "Запрашиваемый ресурс не найден" });
 })
 
@@ -35,7 +36,7 @@ app.use( (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Используется порт ${PORT}`);
+  console.log(`Используется порт ${PORT}`);
 })
 
 
