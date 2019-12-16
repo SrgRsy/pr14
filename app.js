@@ -4,8 +4,10 @@ const app = express();
 const { PORT = 3000 } = process.env;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { login, createUser } = require('./routes/users');
 const auth = require('./middlewares/auth');
+const cards = require('./routes/cards');
+const users = require('./routes/users');
+const authoriz = require('./routes/authoriz');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,14 +20,12 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 
-app.post('/signin', login);
-app.post('/signup', createUser);
 
 
+app.use('/', authoriz);
 app.use(auth);
-
-
-app.use('/cards', require('./routes/cards'));
+app.use('/users', users);
+app.use('/cards',cards);
 app.use((req, res) => {
   res.status(404).send({ "message": "Запрашиваемый ресурс не найден" });
 })
