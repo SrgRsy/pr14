@@ -6,7 +6,7 @@ module.exports.createCard = (req, res) => {
   const { name, link, owner, likes, createdAt } = req.body;
   Card.create({ name, link, owner, likes, createdAt })
     .then(card => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 
@@ -17,12 +17,12 @@ module.exports.deleteCard = (req, res) => {
       return card;
     })
     .then((card) => res.send(card))
-    .catch(() => res.status(404).send({ message: "Ошибка" }));
+    .catch((err) => res.status(404).send({ message:err.message}));
 };
 
 
 module.exports.getCard = (req, res) => {
   Card.find({})
     .then(card => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Ошибка' }));
+    .catch((err) => res.status(500).send({ message : err.message }));
 };
