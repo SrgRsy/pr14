@@ -30,9 +30,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator: function (str) {
-        return validator.isURL(str);
+        return validator.isEmail(str);
       },
-      message: `Эта строка должна быть URL`
+      message: `Эта строка должна быть @Email`
     },
     required: true,
     unique: true
